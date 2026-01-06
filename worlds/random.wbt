@@ -1,0 +1,128 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/gctronic/e-puck/protos/E-puckGroundSensors.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.6378208439206525 0.07783007211219153 -0.7662421620710765 2.8856607994747576
+  position -0.6330649155858011 -0.18528856789573925 0.23584646514297125
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 3 3
+  floorAppearance Appearance {
+    material Material {
+      diffuseColor 1 1 1
+    }
+  }
+}
+DEF Track Solid {
+  translation 0.2 -0.26 0.0001
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0 0 0
+        }
+      }
+      geometry Plane {
+        size 0.015 0.5
+      }
+    }
+  ]
+}
+DEF Track Solid {
+  translation -0.0378736 -0.566333 0.0001
+  rotation 0 0 1 -1.3089953071795861
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0 0 0
+        }
+      }
+      geometry Plane {
+        size 0.015 0.5
+      }
+    }
+  ]
+  name "solid(1)"
+}
+DEF Track Solid {
+  translation -0.518919 -0.630216 0.0001
+  rotation 0 0 1 -1.5707953071795862
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0 0 0
+        }
+      }
+      geometry Plane {
+        size 0.015 0.5
+      }
+    }
+  ]
+  name "solid(2)"
+}
+DEF Track Solid {
+  translation -0.711222 -0.391995 0.0001
+  rotation 0 0 -1 0.261798
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0 0 0
+        }
+      }
+      geometry Plane {
+        size 0.015 0.5
+      }
+    }
+  ]
+  name "solid(3)"
+}
+DEF Track Solid {
+  translation -0.824358 -0.326461 0.0001
+  rotation 0 0 1 2.3562
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0 0 0
+        }
+      }
+      geometry Plane {
+        size 0.015 0.5
+      }
+    }
+  ]
+  name "solid(4)"
+}
+E-puck {
+  hidden position_0_0 202.90242155760296
+  hidden position_0_1 194.9766931393879
+  hidden linearVelocity_0 0.007416157511510219 0.022886258684002903 -1.1938023476504095e-08
+  hidden angularVelocity_0 -0.003669433992765683 0.0011893492670802313 0.00584334513071606
+  hidden rotation_1 0 1 0 1.840491727856196
+  hidden linearVelocity_1 0.007373806051642546 0.02276005549051882 1.1419796619620928e-08
+  hidden angularVelocity_1 -1.1374812144192343 0.3685973137010336 0.005826201785962853
+  hidden rotation_2 0 -1 0 6.085236690358877
+  hidden linearVelocity_2 0.007470454381193088 0.023049153254400375 -1.1454777437625337e-08
+  hidden angularVelocity_2 -1.1529794416255363 0.37361575919497714 0.005827228755446695
+  translation -0.6458053748967464 -0.1436618861933316 -6.395672741591439e-05
+  rotation 0.00040238156525769243 -0.0005539648499626755 0.9999997656059831 1.257627444089755
+  controller "line_follower_proportional"
+  groundSensorsSlot [
+    E-puckGroundSensors {
+    }
+  ]
+}
