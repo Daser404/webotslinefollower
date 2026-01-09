@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.5628849629788868 -0.5472827848366505 -0.6193884660483256 4.2541158690881105
-  position -0.23697857327852806 -1.4073384992074371 3.6759062162371374
+  orientation 0.33976568240845 -0.39847278319322244 -0.8519264769402156 4.759356167996106
+  position -1.2272036671050857 -2.104263600358296 1.3867643185869813
 }
 TexturedBackground {
 }
@@ -24,7 +24,7 @@ RectangleArena {
     }
     texture ImageTexture {
       url [
-        "map2.png"
+        "map3.png"
       ]
       repeatS FALSE
       repeatT FALSE
@@ -151,12 +151,12 @@ DEF Obstacle Solid {
   }
 }
 E-puck {
-  hidden translation_1 0 0.02599999999999907 0.02
-  hidden rotation_1 0 -1 0 0.9449075466094939
-  hidden translation_2 0 -0.025999999999999114 0.02
-  hidden rotation_2 0 -1 0 4.9120936542128755
-  translation -0.871149 -1.26427 0.000295896
-  rotation -1.4398999147349602e-05 0.00034383797963930777 0.9999999407840545 2.17798
+  hidden position_0_0 2449.34512419342
+  hidden position_0_1 2370.1801022281466
+  hidden rotation_1 0 -1 0 1.0971456066188192
+  hidden rotation_2 0 -1 0 4.863943885737136
+  translation -0.90915 -1.24307 0.000171139
+  rotation -0.00012245799643980092 0.000207724993960849 0.9999999709271825 2.11256
   controller "line_follower_avoiding"
   groundSensorsSlot [
     E-puckGroundSensors {

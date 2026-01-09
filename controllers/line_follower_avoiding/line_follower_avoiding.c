@@ -18,6 +18,8 @@
 #include <webots/gyro.h>
 #include <webots/distance_sensor.h>
 #include <math.h>
+#include <webots/led.h>
+
 
 
 /*
@@ -80,7 +82,7 @@ int main(int argc, char **argv) {
   static double last_error = 0;
   static bool turning = 0;
   double velocity = 0; //m/s
-  static int state = 0;//0 = searching for line , 1 = avoiding obstacle, 2 = following line
+  static int state = 0;//0 = searching for line , 1 = avoiding obstacle, 2 = following line, 3 = reached the finnish line
   static double search = SEARCH_CONSTANT; // used for searching the line in a spiral that gets bigger
   int stuck_ellapsed = 0;
   double base_speed = 1.2;
@@ -145,6 +147,8 @@ int main(int argc, char **argv) {
       
       if(stuck_ellapsed>=STUCK_THREASHOLD) // if the robot has been stuck for more than STUCK_THREASHOLD cycles we perform a tank turn in the last direction performed
       {
+        state = 3;
+      /*
         if (last_error > 0) 
          {
            // turn right 
@@ -157,7 +161,7 @@ int main(int argc, char **argv) {
          // turn left
          left_speed = base_speed *0.8;
          right_speed = base_speed ;
-       }
+       }*/
      }
     }
     
@@ -257,14 +261,28 @@ int main(int argc, char **argv) {
     
     ///if the robot reads the line
     ///stop turning
-    if (off_track == 0)
+    if (off_track == 0 && state!= 3)
     {
       state = 2;///enter the line following state
       turning = 0; ///stop turning
       search = SEARCH_CONSTANT;///reset the search spiral to small
     }
 
-    
+    if(state == 3)
+    {
+      left_speed  = 0;
+      right_speed = 0;
+      WbDeviceTag led0 = wb_robot_get_device("led0");
+      WbDeviceTag led2 = wb_robot_get_device("led2");
+      WbDeviceTag led4 = wb_robot_get_device("led4");
+      WbDeviceTag led6 = wb_robot_get_device("led6");
+      
+      wb_led_set(led0, 1);
+      wb_led_set(led2, 1);
+      wb_led_set(led4, 1);
+      wb_led_set(led6, 1);
+
+    }
     
     ///change the motor speeds with the calculated values
     wb_motor_set_velocity(left_motor, left_speed); 
@@ -292,7 +310,7 @@ int main(int argc, char **argv) {
     velocity+=a[0]/15.625;
     printf("Acc: %f %f %f       speed(cm/s): %lf\n", a[0], a[1], a[2], velocity*100); 
     printf("Gyro: %f %f %f       state: %d\n", g[0], g[1], g[2], state);
-    printf("\n");printf("\n");printf("\n");
+    printf("\n");
     
   };
 
