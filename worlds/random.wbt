@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.34147991072214834 0.009088967688162917 -0.9398451261987568 3.1380058103533006
-  position 1.131157595736883 -0.0820305895391856 0.9467278320939396
+  orientation 0.3213069527205349 -0.5055928807261928 -0.8007107349676497 4.99246006756039
+  position -1.4469664714206227 -2.3568113001769375 1.5562693589179872
 }
 TexturedBackground {
 }
@@ -22,10 +22,20 @@ RectangleArena {
     material Material {
       diffuseColor 1 1 1
     }
+    texture ImageTexture {
+      url [
+        "map2.png"
+      ]
+      repeatS FALSE
+      repeatT FALSE
+    }
+    textureTransform TextureTransform {
+      scale 0.15 0.15
+    }
   }
 }
 DEF Track Solid {
-  translation 0.2 -0.26 0.0001
+  translation 0.2 -0.26 -0.1001
   children [
     Shape {
       appearance Appearance {
@@ -38,77 +48,9 @@ DEF Track Solid {
       }
     }
   ]
-}
-DEF Track Solid {
-  translation -0.0378736 -0.566333 0.0001
-  rotation 0 0 1 -1.3089953071795861
-  children [
-    Shape {
-      appearance Appearance {
-        material Material {
-          diffuseColor 0 0 0
-        }
-      }
-      geometry Plane {
-        size 0.015 0.5
-      }
-    }
-  ]
-  name "solid(1)"
-}
-DEF Track Solid {
-  translation -0.518919 -0.630216 0.0001
-  rotation 0 0 1 -1.5707953071795862
-  children [
-    Shape {
-      appearance Appearance {
-        material Material {
-          diffuseColor 0 0 0
-        }
-      }
-      geometry Plane {
-        size 0.015 0.5
-      }
-    }
-  ]
-  name "solid(2)"
-}
-DEF Track Solid {
-  translation -0.825235 -0.391486 0.0001
-  rotation 0 0 1 0.261801
-  children [
-    Shape {
-      appearance Appearance {
-        material Material {
-          diffuseColor 0 0 0
-        }
-      }
-      geometry Plane {
-        size 0.015 0.5
-      }
-    }
-  ]
-  name "solid(3)"
-}
-DEF Track Solid {
-  translation -0.718293 0.0200202 0.0001
-  rotation 0 0 1 2.3562
-  children [
-    Shape {
-      appearance Appearance {
-        material Material {
-          diffuseColor 0 0 0
-        }
-      }
-      geometry Plane {
-        size 0.015 0.5
-      }
-    }
-  ]
-  name "solid(4)"
 }
 DEF Obstacle Solid {
-  translation -0.77 -0.62 0.05
+  translation -0.99 -0.62 0.05
   children [
     Shape {
       appearance Appearance {
@@ -126,9 +68,28 @@ DEF Obstacle Solid {
     size 0.1 0.1 0.1
   }
 }
+DEF Obstacle Solid {
+  translation -0.83 0.59 0.05
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.2 0.2 0.5
+        }
+      }
+      geometry Box {
+        size 0.1 0.1 0.1
+      }
+    }
+  ]
+  name "solid(1)"
+  boundingObject Box {
+    size 0.1 0.1 0.1
+  }
+}
 E-puck {
-  translation 0.396913 -0.0419673 -7.75761e-05
-  rotation 0.00013034797894030542 -0.0005532989106061623 0.9999998384348469 -2.7785953071795864
+  translation -0.903997 -1.38187 0.000162524
+  rotation 0.00012827299748656296 0.00015078099704553139 0.9999999804055643 1.7542
   controller "line_follower_avoiding"
   groundSensorsSlot [
     E-puckGroundSensors {

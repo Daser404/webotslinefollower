@@ -77,7 +77,7 @@ int main(int argc, char **argv) {
   static double last_error = 0;
   static bool turning = 0;
   double velocity = 0; //m/s
-  static int state = 0;//0 = line , 1 = obstacle
+  static int state = 0;//0 = searching for line , 1 = avoiding obstacle, 2 = following line
   
   int stuck_ellapsed = 0;
 
@@ -176,12 +176,14 @@ int main(int argc, char **argv) {
         }
        else if (last_error > 0) 
         {
+         state = 0;
          //turn right 
          left_speed = base_speed;
          right_speed = base_speed *-0.8;
         }
        else
         {
+          state = 0;
          //turn left
          left_speed = base_speed *-0.8;
          right_speed = base_speed;
@@ -193,7 +195,7 @@ int main(int argc, char **argv) {
      for (int i = 0; i < 8; i++) 
      ps_value[i] = wb_distance_sensor_get_value(prox_sensors[i]);
     
-    bool front_wall = ps_value[0] > 80.0 || ps_value[7] > 80.0;
+    bool front_wall = ps_value[0] > 120.0 || ps_value[7] > 120.0;
     
     bool left_wall  = ps_value[5] > 80.0;
     
@@ -206,7 +208,7 @@ int main(int argc, char **argv) {
       left_speed = base_speed;
       right_speed = -base_speed;
     } 
-    if (left_wall && off_track && state)
+    if (left_wall && off_track && state == 1)
     {
       stuck_ellapsed = 0;
       turning = 0;
@@ -214,12 +216,14 @@ int main(int argc, char **argv) {
       right_speed = base_speed;
     } 
     if (off_track == 0)
-    state = 0;
+    state = 2;
     //else 
     //{
     //  left_speed  = base_speed / 4.0; 
     //  right_speed = base_speed;
     //}
+    
+    
     
     ///change the motor speeds with the calculated values
     wb_motor_set_velocity(left_motor, left_speed); 
@@ -246,7 +250,7 @@ int main(int argc, char **argv) {
     const double *g = wb_gyro_get_values(gyro); 
     velocity+=a[0]/15.625;
     printf("Acc: %f %f %f       speed(cm/s): %lf\n", a[0], a[1], a[2], velocity*100); 
-    printf("Gyro: %f %f %f\n", g[0], g[1], g[2]);
+    printf("Gyro: %f %f %f       state: %d\n", g[0], g[1], g[2], state);
     printf("\n");printf("\n");printf("\n");
     
   };
