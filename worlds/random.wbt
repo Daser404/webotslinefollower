@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.3213069527205349 -0.5055928807261928 -0.8007107349676497 4.99246006756039
-  position -1.4469664714206227 -2.3568113001769375 1.5562693589179872
+  orientation 0.5628849629788868 -0.5472827848366505 -0.6193884660483256 4.2541158690881105
+  position -0.23697857327852806 -1.4073384992074371 3.6759062162371374
 }
 TexturedBackground {
 }
@@ -87,9 +87,76 @@ DEF Obstacle Solid {
     size 0.1 0.1 0.1
   }
 }
+DEF Obstacle Solid {
+  translation -0.28 1.11 0.05
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.2 0.2 0.5
+        }
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+      }
+    }
+  ]
+  name "solid(2)"
+  boundingObject Cylinder {
+    height 0.1
+    radius 0.05
+  }
+}
+DEF Obstacle Solid {
+  translation 0.74 1.08 0.05
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.2 0.2 0.5
+        }
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+      }
+    }
+  ]
+  name "solid(3)"
+  boundingObject Cylinder {
+    height 0.1
+    radius 0.05
+  }
+}
+DEF Obstacle Solid {
+  translation 1.2 0.44 0.05
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          diffuseColor 0.2 0.2 0.5
+        }
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.05
+      }
+    }
+  ]
+  name "solid(4)"
+  boundingObject Cylinder {
+    height 0.1
+    radius 0.05
+  }
+}
 E-puck {
-  translation -0.903997 -1.38187 0.000162524
-  rotation 0.00012827299748656296 0.00015078099704553139 0.9999999804055643 1.7542
+  hidden translation_1 0 0.02599999999999907 0.02
+  hidden rotation_1 0 -1 0 0.9449075466094939
+  hidden translation_2 0 -0.025999999999999114 0.02
+  hidden rotation_2 0 -1 0 4.9120936542128755
+  translation -0.871149 -1.26427 0.000295896
+  rotation -1.4398999147349602e-05 0.00034383797963930777 0.9999999407840545 2.17798
   controller "line_follower_avoiding"
   groundSensorsSlot [
     E-puckGroundSensors {

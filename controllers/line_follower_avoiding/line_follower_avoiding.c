@@ -17,15 +17,16 @@
 #include <webots/accelerometer.h> 
 #include <webots/gyro.h>
 #include <webots/distance_sensor.h>
+#include <math.h>
 
 
 /*
  * You may want to add macros here.
  */
 #define TIME_STEP 64
-#define NUM_SENSORS 3
 #define MAX_SPEED 6.28
 #define STUCK_THREASHOLD 30
+#define SEARCH_CONSTANT 0.0
 /*
  * This is the main program.
  * The arguments of the main function can be specified by the
@@ -38,16 +39,17 @@ int main(int argc, char **argv) {
   wb_robot_init();
   
   ///difine the name of the sensors
-  const char *gs_names[NUM_SENSORS] = {"gs0", "gs1", "gs2"}; 
+  const char *gs_names[3] = {"gs0", "gs1", "gs2"}; 
   
   ///assing the ground sensors to device variables and enable the ground sensors
-  WbDeviceTag gs[NUM_SENSORS];
+  WbDeviceTag gs[3];
   
-  for (int i = 0; i < NUM_SENSORS; i++) 
+  for (int i = 0; i < 3; i++) 
   { 
     gs[i] = wb_robot_get_device(gs_names[i]); 
     wb_distance_sensor_enable(gs[i], TIME_STEP); 
   }
+  double gs_value[3] = {0};
   
    ///assing the proximity sensors to device variables and enable the proximity sensors
   WbDeviceTag prox_sensors[8];
@@ -57,6 +59,7 @@ int main(int argc, char **argv) {
     prox_sensors[ind] = wb_robot_get_device(prox_sensor_name);
     wb_distance_sensor_enable(prox_sensors[ind], TIME_STEP);
   }
+  double ps_value[8] = {0};
   
   ///assing the motors to device variables and enable the motors
   static WbDeviceTag left_motor, right_motor;
@@ -78,9 +81,9 @@ int main(int argc, char **argv) {
   static bool turning = 0;
   double velocity = 0; //m/s
   static int state = 0;//0 = searching for line , 1 = avoiding obstacle, 2 = following line
-  
+  static double search = SEARCH_CONSTANT; // used for searching the line in a spiral that gets bigger
   int stuck_ellapsed = 0;
-
+  double base_speed = 1.2;
   /* main loop
    * Perform simulation steps of TIME_STEP milliseconds
    * and leave the loop when the simulation is over
@@ -96,7 +99,7 @@ int main(int argc, char **argv) {
     
     double left_speed;
     double right_speed;   
-    double base_speed = 1.2;
+    
      
      
      
@@ -104,8 +107,7 @@ int main(int argc, char **argv) {
      
      
      ///read and store the ground sensor readings in an array
-     double gs_value[3] = {0};
-     for (int i = 0; i < NUM_SENSORS; i++) 
+     for (int i = 0; i < 3; i++) 
      gs_value[i] = wb_distance_sensor_get_value(gs[i]);
      
     
@@ -132,7 +134,6 @@ int main(int argc, char **argv) {
     double K = 2; // tuning constant
     double rotation = K * error;
     
-    base_speed = 1.2; // forward speed
      
     left_speed = base_speed + rotation;
     right_speed = base_speed - rotation; 
@@ -140,9 +141,9 @@ int main(int argc, char **argv) {
     ///if the robot is stuck with all three sensors on black we enter this case 
     if (all_black) 
     {
-      stuck_ellapsed ++;//count how many frames the robot has been stuck
+      stuck_ellapsed ++;//count how many cycles the robot has been stuck
       
-      if(stuck_ellapsed>=STUCK_THREASHOLD) // if the robot has been stuck for more than 15 frames we perform a tank turn in the last direction performed
+      if(stuck_ellapsed>=STUCK_THREASHOLD) // if the robot has been stuck for more than STUCK_THREASHOLD cycles we perform a tank turn in the last direction performed
       {
         if (last_error > 0) 
          {
@@ -179,50 +180,90 @@ int main(int argc, char **argv) {
          state = 0;
          //turn right 
          left_speed = base_speed;
-         right_speed = base_speed *-0.8;
+         right_speed = base_speed * search;///-0.8;
+         if(search < 0.9)
+         search += 0.008;
         }
        else
         {
           state = 0;
          //turn left
-         left_speed = base_speed *-0.8;
+         left_speed = base_speed * search;///-0.8;
          right_speed = base_speed;
+         if(search < 0.9)
+         search += 0.008;
         }
       }
     }
     
-     double ps_value[8] = {0};
+    
+    ///reading the sensor values from the proximity sensors
      for (int i = 0; i < 8; i++) 
      ps_value[i] = wb_distance_sensor_get_value(prox_sensors[i]);
     
-    bool front_wall = ps_value[0] > 120.0 || ps_value[7] > 120.0;
+    
+    /// check where we have obstacles
+    bool front_wall_right = ps_value[0] > 120.0; 
+    bool front_wall_left = ps_value[7] > 120.0;
     
     bool left_wall  = ps_value[5] > 80.0;
+    bool right_wall  = ps_value[2] > 80.0;
     
     
-    if (front_wall || turning == 1) 
+    ///if the object is more to the left we turn right on the spot until it is sensed by the left sensor
+    if (front_wall_left || turning == 1) 
     {    
-      state = 1;
-      turning = 1;
+      state = 1; // enter the obstacle avoidance state
       stuck_ellapsed = 0;
+      
+      // we start turning right
+      turning = 1; 
       left_speed = base_speed;
       right_speed = -base_speed;
     } 
+    ///when the left sensor reads the object we start going forward with a slight left turn
     if (left_wall && off_track && state == 1)
     {
       stuck_ellapsed = 0;
-      turning = 0;
-      left_speed  = base_speed*0.6;
+      turning = 0;/// stop turning
+      
+      //start going forward with a slight left turn
+      left_speed  = base_speed*0.7;
       right_speed = base_speed;
     } 
-    if (off_track == 0)
-    state = 2;
-    //else 
-    //{
-    //  left_speed  = base_speed / 4.0; 
-    //  right_speed = base_speed;
-    //}
     
+    ///if the object is more to the right we turn left on the spot until it is sensed by the left right
+    if (front_wall_right || turning == -1) 
+    {    
+      state = 1; // enter the obstacle avoidance state
+      stuck_ellapsed = 0;
+      
+      // we start turning left
+      turning = -1;
+      left_speed = -base_speed;
+      right_speed = +base_speed;
+    } 
+    
+    ///when the right sensor reads the object we start going forward with a slight right turn
+    if (right_wall && off_track && state == 1)
+    {
+      stuck_ellapsed = 0;
+      turning = 0;/// stop turning
+      
+      //start going forward with a slight right turn
+      left_speed  = base_speed;
+      right_speed = base_speed*0.7;
+    } 
+    
+    ///if the robot reads the line
+    ///stop turning
+    if (off_track == 0)
+    {
+      state = 2;///enter the line following state
+      turning = 0; ///stop turning
+      search = SEARCH_CONSTANT;///reset the search spiral to small
+    }
+
     
     
     ///change the motor speeds with the calculated values
@@ -234,7 +275,7 @@ int main(int argc, char **argv) {
     last_error = error;
     
     ///print the ground sensor reeadings
-    for (int i = 0; i < NUM_SENSORS; i++) 
+    for (int i = 0; i < 3; i++) 
     { 
       printf("gs%d = %f ", i, gs_value[i]);
     }
