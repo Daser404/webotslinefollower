@@ -1,4 +1,29 @@
 /**
+ * \mainpage Webots Line-Following Robot Controller
+ *
+ * Webots controller for a line-following robot with obstacle avoidance.
+ *
+ * This controller uses ground sensors and proximity sensors to follow a line,
+ * avoid obstacles using a wall-following algorithm, and detect a finish line.
+ * It implements several states:
+ * - Searching for the line
+ * - Avoiding obstacles
+ * - Following the line
+ * - Stopping at the finish
+ *
+ * The controller is used on an "e-puck" predefined robot with additional
+ * ground sensors. By using the proximity sensors to detect nearby objects and
+ * the front IR ground sensors to track the line, the robot can follow the path
+ * while avoiding obstacles in its way.
+ *
+ * The world consists of a rectangular arena with walls on the sides and a PNG
+ * image of the track used as the ground texture. Along the drawn path, five
+ * obstacles are placed: two cubes and three cylinders at different orientations.
+ * The finish line is marked by a thick black line followed by a yellow star.
+ */
+
+
+/**
  * @file line_follower_avoiding.c
  * @brief Webots controller for a line-following robot with obstacle avoidance.
  *
@@ -12,7 +37,7 @@
  * on the front of the robot, it can follow a line while avoiding obstacles in its path.
  *
  *
- * The world consisits of a rectangular arena with walls on the sides and a PNG image of the track as a texture for the ground.
+ * The world consists of a rectangular arena with walls on the sides and a PNG image of the track as a texture for the ground.
  * Allong the drawn path we added 5 obstacles: 2 cubes and 3 cylinders placed at different orientations.
  * The finish line is marked by a thick black line followed by a yellow star.
  *
